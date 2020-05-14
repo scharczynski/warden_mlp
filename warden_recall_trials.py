@@ -6,16 +6,16 @@ import maxlikespy.plotting as plotting
 import json
 
 def run_script(cell_range):
-    path_to_data = "/Users/stevecharczynski/workspace/data/warden/recall_trials/"
-    save_dir = "/Users/stevecharczynski/workspace/data/warden/recall_trials/"
-    # save_dir = "/projectnb/ecog-eeg/stevechar/ml_runs/warden/recall_trials/"
-    # path_to_data = "/projectnb/ecog-eeg/stevechar/data/warden/recall_trials/"
+    # path_to_data = "/Users/stevecharczynski/workspace/data/warden/recall_trials/"
+    # save_dir = "/Users/stevecharczynski/workspace/data/warden/recall_trials/"
+    save_dir = "/projectnb/ecog-eeg/stevechar/ml_runs/warden/recall_trials/"
+    path_to_data = "/projectnb/ecog-eeg/stevechar/data/warden/recall_trials/"
 
     # time_info = list(zip(np.zeros(len(trial_length), dtype=int), trial_length))
     data_processor = analysis.DataProcessor(
         path_to_data, cell_range, window=[0, 1500])
     solver_params = {
-        "niter": 100,
+        "niter": 2000,
         "stepsize": 1000,
         "interval": 5,
         "method": "TNC",
@@ -50,8 +50,8 @@ def run_script(cell_range):
     pipeline.set_model_bounds("SigmaMuTauStim4", bounds_smt)
     pipeline.set_model_bounds("SigmaMuTauStimWarden", bounds_smtstim)
     pipeline.set_model_bounds("Const", {"a_0":[10e-10, 1]})
-    with open("/Users/stevecharczynski/workspace/data/warden/recall_trials/info.json") as f:
-    # with open("/projectnb/ecog-eeg/stevechar/data/warden/recall_trials/info.json") as f:
+    # with open("/Users/stevecharczynski/workspace/data/warden/recall_trials/info.json") as f:
+    with open("/projectnb/ecog-eeg/stevechar/data/warden/recall_trials/info.json") as f:
         stims = json.load(f)
         stims = {int(k):v for k,v in stims.items()}
     pipeline.set_model_info("SigmaMuTauStimWarden", "stim_identity", stims, per_cell=True)
@@ -67,7 +67,7 @@ def run_script(cell_range):
     pipeline.set_model_x0("SigmaMuTauStim4", [10, 1000, 100, 1e-1, 1e-1])
     pipeline.set_model_x0("Const", [1e-1])
     pipeline.fit_all_models(solver_params=solver_params)
-    # pipeline.fit_even_odd(solver_params=solver_params)
+    pipeline.fit_even_odd(solver_params=solver_params)
     # pipeline.compare_even_odd("Const", "SigmaMuTau", 0.01)
     # pipeline.compare_even_odd("SigmaMuTau", "SigmaMuTauStimWarden", 0.01)
     pipeline.compare_models("Const", "SigmaMuTau", 0.01, smoother_value=100)
@@ -81,7 +81,17 @@ def run_script(cell_range):
     pipeline.compare_models("SigmaMuTauStim2", "SigmaMuTauStimWarden", 0.01, smoother_value=100)
     pipeline.compare_models("SigmaMuTauStim3", "SigmaMuTauStimWarden", 0.01, smoother_value=100)
     pipeline.compare_models("SigmaMuTauStim4", "SigmaMuTauStimWarden", 0.01, smoother_value=100)
-
+    pipeline.compare_even_odd("Const", "SigmaMuTau", 0.01)
+    pipeline.compare_even_odd("Const", "SigmaMuTauStimWarden", 0.01)
+    pipeline.compare_even_odd("SigmaMuTau", "SigmaMuTauStimWarden", 0.01)
+    pipeline.compare_even_odd("Const", "SigmaMuTauStim1", 0.01)
+    pipeline.compare_even_odd("Const", "SigmaMuTauStim2", 0.01)
+    pipeline.compare_even_odd("Const", "SigmaMuTauStim3", 0.01)
+    pipeline.compare_even_odd("Const", "SigmaMuTauStim4", 0.01)
+    pipeline.compare_even_odd("SigmaMuTauStim1", "SigmaMuTauStimWarden", 0.01)
+    pipeline.compare_even_odd("SigmaMuTauStim2", "SigmaMuTauStimWarden", 0.01)
+    pipeline.compare_even_odd("SigmaMuTauStim3", "SigmaMuTauStimWarden", 0.01)
+    pipeline.compare_even_odd("SigmaMuTauStim4", "SigmaMuTauStimWarden", 0.01)
 
     # pipeline.compare_even_odd("Const", "SigmaMuTau", 0.01)
     # pipeline.compare_even_odd("Const", "SigmaMuTauStimWarden", 0.01)
@@ -123,7 +133,7 @@ def run_script(cell_range):
     # pipeline.compare_even_odd("Const", "SigmaMuTau", 0.01)
     # pipeline.compare_models("Const", "SigmaMuTau", 0.01, smoother_value=100)
 
-run_script(range(3,4))
+# run_script(range(3,4))
 if __name__ == "__main__":
     cell_range = sys.argv[-2:]
     cell_range = list(map(int, cell_range))
