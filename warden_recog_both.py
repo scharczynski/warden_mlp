@@ -85,7 +85,7 @@ def run_script(cell_range):
     pipeline.set_model_bounds("GaussianStimBoth", bounds_gaussianstim)
     pipeline.set_model_bounds("Const", {"a_0":[10e-10, 1]})
     # with open("/Users/stevecharczynski/workspace/data/warden/recog_trials/info.json") as f:
-    with open("/projectnb/ecog-eeg/stevechar/data/warden/recall_trials/info.json") as f:
+    with open("/projectnb/ecog-eeg/stevechar/data/warden/recog_trials/info.json") as f:
         stims = json.load(f)
         stims = {int(k):v for k,v in stims.items()}
     pipeline.set_model_info("GaussianStimBoth", "stim_identity", stims, per_cell=True)
