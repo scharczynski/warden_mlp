@@ -63,3 +63,5 @@ Cleanup:
 
     This script is obviously not neccesary to use, but if you want to handle the output on your machine it's the easiest way to do so.
     
+
+    Also contained in this repository is a "remove_output_files.sh" script that can be used to clear the cluster output files in your run directory. This is often handy if you're having problems running the code and need to look at the job error files. If you don't clear the output files from previous runs, it is difficult to tell which output files are the most recent.
