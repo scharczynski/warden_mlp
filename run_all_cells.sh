@@ -1,5 +1,5 @@
 #!/bin/bash -
-#$ -l h_rt=500:00:00
+#$ -l h_rt=400:00:00
 #$ -P ecog-eeg
 #$ -N run_all_cells
 
