@@ -42,7 +42,7 @@ class SigmaMuTauStimWarden(Model):
     
         s, mu, tau, a_1,a_2,a_3, a_4, a_0 = x
         l = 1/tau
-        fun1 = (np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
+        fun1 = 0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
 
         fun = (
             (a_1*(self.stim_matrix[:, 0] * fun1.T))
@@ -88,7 +88,7 @@ class SigmaMuTau(Model):
         #     np.array(list(map(self.erfcx, (1/np.sqrt(2))*((s/tau)- (self.t-m)/s))))
         # ) + a_0
 
-        fun = (a_1*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))) + a_0
+        fun = a_1*(0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))) + a_0
 
         return fun
 
@@ -153,6 +153,7 @@ class SigmaMuTauStim1(Model):
         trial_indices = [x-1 for x in list(map(int, trials))]
 
         self.t = self.t[trial_indices]
+        
         for trial_num, trial in enumerate(trials):
             stim_class = self.stims[(trial)]["sample"][0]  
             if stim_class == 1:
@@ -160,18 +161,22 @@ class SigmaMuTauStim1(Model):
             else:
                 stim_matrix[int(trial_num)][:] = [0, 0, 0, 0]
         self.stim_matrix = stim_matrix
+        # self.good_trials = np.where(stim_matrix[:, 0])
         return self.stim_matrix
 
     def model(self, x, plot=False):
     
         s, mu, tau, a_1, a_0 = x
         l = 1/tau
-        fun1 = (np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
+        fun1 = 0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
+        # y.peak*((1/2)*exp((y.tau/2).*(2*y.mu + y.tau*y.sig^2-2*t)).*erfc((y.mu + y.tau*y.sig^2 - t)/(sqrt(2)*y.sig)));
 
         fun = (
             (a_1*(self.stim_matrix[:, 0] * fun1.T))
         ) + a_0
-
+        # fun = (
+        #     (a_1*(fun1[self.good_trials]))
+        # ) + a_0
         return fun
 
     def objective(self, x):
@@ -180,6 +185,9 @@ class SigmaMuTauStim1(Model):
         obj = np.sum(self.spikes * (-np.log(fun)) +
                       (1 - self.spikes) * (-np.log(1 - (fun))))
 
+        # obj = np.sum(self.spikes[self.good_trials] * (-np.log(fun)) +
+        #               (1 - self.spikes[self.good_trials]) * (-np.log(1 - (fun))))
+
         return obj
 
     def plot_model(self, x):
@@ -187,6 +195,7 @@ class SigmaMuTauStim1(Model):
 
 
         return (np.sum(fun, axis=1)/fun.shape[1])
+
 
 class SigmaMuTauStim2(Model):
     def __init__(self, data):
@@ -220,7 +229,7 @@ class SigmaMuTauStim2(Model):
     
         s, mu, tau, a_1, a_0 = x
         l = 1/tau
-        fun1 = (np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
+        fun1 = 0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
 
         fun = (
             (a_1*(self.stim_matrix[:, 0] * fun1.T))
@@ -274,7 +283,7 @@ class SigmaMuTauStim3(Model):
     
         s, mu, tau, a_1, a_0 = x
         l = 1/tau
-        fun1 = (np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
+        fun1 = 0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
 
         fun = (
             (a_1*(self.stim_matrix[:, 0] * fun1.T))
@@ -328,7 +337,7 @@ class SigmaMuTauStim4(Model):
     
         s, mu, tau, a_1, a_0 = x
         l = 1/tau
-        fun1 = (np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
+        fun1 = 0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
 
         fun = (
             (a_1*(self.stim_matrix[:, 0] * fun1.T))
@@ -1091,3 +1100,208 @@ class GaussianStimBoth4(Model):
 
         # return self.model(x)
         return (np.sum(fun, axis=1)/fun.shape[1])
+
+class ExponentialStim1(Model):
+    def __init__(self, data):
+        super().__init__(data)
+        self.param_names = ["tau", "s", "a_1", "a_0"]
+        self.t = np.tile(self.t, (self.num_trials, 1))
+
+    def info_callback(self):
+        self.stims = self.info["stim_identity"]
+        stim_matrix = np.zeros((self.spikes.shape[0], 4))
+        if self.even_odd_trials == "even":
+            trials  = list(self.stims.keys())[::2]
+        elif self.even_odd_trials == "odd":
+            trials = list(self.stims.keys())[1::2]
+        else:
+            trials  =  list(self.stims.keys())
+        #rossi-pool 1 indexed trials
+        trial_indices = [x-1 for x in list(map(int, trials))]
+
+        self.t = self.t[trial_indices]
+        
+        for trial_num, trial in enumerate(trials):
+            stim_class = self.stims[(trial)]["sample"][0]  
+            if stim_class == 1:
+                stim_matrix[int(trial_num)][:] = [1, 0, 0, 0]
+            else:
+                stim_matrix[int(trial_num)][:] = [0, 0, 0, 0]
+        self.stim_matrix = stim_matrix
+        self.good_trials = np.where(stim_matrix[:, 0])
+        return self.stim_matrix
+
+    def model(self, x, plot=False):
+    
+        tau, s, a_1, a_0 = x
+        l = 1/tau
+        fun1 = np.exp((-l*self.t) + s)
+
+        fun = (
+            (a_1*(self.stim_matrix[:, 0] * fun1.T))
+        ) + a_0
+
+        return fun
+
+    def objective(self, x):
+        fun = self.model(x).T
+
+        obj = np.sum(self.spikes * (-np.log(fun)) +
+                      (1 - self.spikes) * (-np.log(1 - (fun))))
+
+        return obj
+
+    def plot_model(self, x):
+        fun = self.model(x)
+
+
+        return (np.sum(fun, axis=1)/fun.shape[1])
+class ExponentialStim2(Model):
+    def __init__(self, data):
+        super().__init__(data)
+        self.param_names = ["tau", "a_1", "a_0"]
+        self.t = np.tile(self.t, (self.num_trials, 1))
+
+    def info_callback(self):
+        self.stims = self.info["stim_identity"]
+        stim_matrix = np.zeros((self.spikes.shape[0], 4))
+        if self.even_odd_trials == "even":
+            trials  = list(self.stims.keys())[::2]
+        elif self.even_odd_trials == "odd":
+            trials = list(self.stims.keys())[1::2]
+        else:
+            trials  =  list(self.stims.keys())
+        #rossi-pool 1 indexed trials
+        trial_indices = [x-1 for x in list(map(int, trials))]
+
+        self.t = self.t[trial_indices]
+        
+        for trial_num, trial in enumerate(trials):
+            stim_class = self.stims[(trial)]["sample"][0]  
+            if stim_class == 2:
+                stim_matrix[int(trial_num)][:] = [1, 0, 0, 0]
+            else:
+                stim_matrix[int(trial_num)][:] = [0, 0, 0, 0]
+        self.stim_matrix = stim_matrix
+        self.good_trials = np.where(stim_matrix[:, 0])
+        return self.stim_matrix
+
+    def model(self, x, plot=False):
+    
+        tau, a_1, a_0 = x
+        l = 1/tau
+        fun1 = np.exp(-l*self.t)
+
+        fun = (
+            (a_1*(self.stim_matrix[:, 0] * fun1.T))
+        ) + a_0
+
+        return fun
+
+    def objective(self, x):
+        fun = self.model(x).T
+
+        obj = np.sum(self.spikes * (-np.log(fun)) +
+                      (1 - self.spikes) * (-np.log(1 - (fun))))
+
+        return obj
+
+class ExponentialStim3(Model):
+    def __init__(self, data):
+        super().__init__(data)
+        self.param_names = ["tau", "a_1", "a_0"]
+        self.t = np.tile(self.t, (self.num_trials, 1))
+
+    def info_callback(self):
+        self.stims = self.info["stim_identity"]
+        stim_matrix = np.zeros((self.spikes.shape[0], 4))
+        if self.even_odd_trials == "even":
+            trials  = list(self.stims.keys())[::2]
+        elif self.even_odd_trials == "odd":
+            trials = list(self.stims.keys())[1::2]
+        else:
+            trials  =  list(self.stims.keys())
+        #rossi-pool 1 indexed trials
+        trial_indices = [x-1 for x in list(map(int, trials))]
+
+        self.t = self.t[trial_indices]
+        
+        for trial_num, trial in enumerate(trials):
+            stim_class = self.stims[(trial)]["sample"][0]  
+            if stim_class == 3:
+                stim_matrix[int(trial_num)][:] = [1, 0, 0, 0]
+            else:
+                stim_matrix[int(trial_num)][:] = [0, 0, 0, 0]
+        self.stim_matrix = stim_matrix
+        self.good_trials = np.where(stim_matrix[:, 0])
+        return self.stim_matrix
+
+    def model(self, x, plot=False):
+    
+        tau, a_1, a_0 = x
+        l = 1/tau
+        fun1 = np.exp(-l*self.t)
+
+        fun = (
+            (a_1*(self.stim_matrix[:, 0] * fun1.T))
+        ) + a_0
+
+        return fun
+
+    def objective(self, x):
+        fun = self.model(x).T
+
+        obj = np.sum(self.spikes * (-np.log(fun)) +
+                      (1 - self.spikes) * (-np.log(1 - (fun))))
+
+        return obj
+
+class ExponentialStim4(Model):
+    def __init__(self, data):
+        super().__init__(data)
+        self.param_names = ["tau", "a_1", "a_0"]
+        self.t = np.tile(self.t, (self.num_trials, 1))
+
+    def info_callback(self):
+        self.stims = self.info["stim_identity"]
+        stim_matrix = np.zeros((self.spikes.shape[0], 4))
+        if self.even_odd_trials == "even":
+            trials  = list(self.stims.keys())[::2]
+        elif self.even_odd_trials == "odd":
+            trials = list(self.stims.keys())[1::2]
+        else:
+            trials  =  list(self.stims.keys())
+        #rossi-pool 1 indexed trials
+        trial_indices = [x-1 for x in list(map(int, trials))]
+
+        self.t = self.t[trial_indices]
+        
+        for trial_num, trial in enumerate(trials):
+            stim_class = self.stims[(trial)]["sample"][0]  
+            if stim_class == 4:
+                stim_matrix[int(trial_num)][:] = [1, 0, 0, 0]
+            else:
+                stim_matrix[int(trial_num)][:] = [0, 0, 0, 0]
+        self.stim_matrix = stim_matrix
+        self.good_trials = np.where(stim_matrix[:, 0])
+        return self.stim_matrix
+
+    def model(self, x, plot=False):
+    
+        tau, a_1, a_0 = x
+        l = 1/tau
+        fun1 = np.exp(-l*self.t)
+
+        fun = (
+            (a_1*(self.stim_matrix[:, 0] * fun1.T))
+        ) + a_0
+
+        return fun
+
+    def objective(self, x):
+        fun = self.model(x).T
+
+        obj = np.sum(self.spikes * (-np.log(fun)) +
+                      (1 - self.spikes) * (-np.log(1 - (fun))))
+
+        return obj
