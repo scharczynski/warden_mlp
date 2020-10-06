@@ -17,30 +17,30 @@ def run_script(cell_range):
     data_processor = analysis.DataProcessor(
         path_to_data, cell_range, window=[-500, 1500])
     solver_params = {
-        "niter": 2500,
-        "stepsize": 1000,
-        "interval": 10,
+        "niter": 1000,
+        "stepsize": 100,
+        "interval": 20,
         "method": "TNC",
         "use_jac": True,
         "T" : 1,
         "disp":False
     }
     bounds_smtstim = {
-        "sigma": [0, 1000.],
+        "sigma": [1e-4, 1000.],
         "mu": [0, 1500.],
-        "tau": [0, 10000.],
-        "a_1": [0., 1/5.],
-        "a_2": [0., 1/5.],
-        "a_3": [0., 1/5.],
-        "a_4": [0., 1/5.],
-        "a_0": [0., 1/5.]
+        "tau": [1e-4, 10000.],
+        "a_1": [1e-10, 1/2.],
+        "a_2": [1e-10, 1/2.],
+        "a_3": [1e-10, 1/2.],
+        "a_4": [1e-10, 1/2.],
+        "a_0": [1e-10, 1/2.]
     }
     bounds_smt = {
-        "sigma": [0, 1000.],
+        "sigma": [1e-4, 1000.],
         "mu": [0, 1500.],
-        "tau": [0, 10000.],
-        "a_1": [0., 1/2.],
-        "a_0": [0., 1/2.]
+        "tau": [1e-4, 10000.],
+        "a_1": [1e-10, 1/2.],
+        "a_0": [1e-10, 1/2.]
     }
     pipeline = analysis.Pipeline(cell_range, data_processor, [
         "Const","SigmaMuTau", "SigmaMuTauStimWarden", "SigmaMuTauStim1", \
@@ -52,7 +52,7 @@ def run_script(cell_range):
     pipeline.set_model_bounds("SigmaMuTauStim4", bounds_smt)
     pipeline.set_model_bounds("SigmaMuTauStimWarden", bounds_smtstim)
     pipeline.set_model_bounds("Const", {"a_0":[10e-10, 1]})
-    # with open("/Users/stevecharczynski/workspace/data/warden/recog_trials/info.json") as f:
+    # with open("/Users/stevecharczynski/workspace/data/warden/recall_trials/info.json") as f:
     with open("/projectnb/ecog-eeg/stevechar/data/warden/recall_trials/info.json") as f:
         stims = json.load(f)
         stims = {int(k):v for k,v in stims.items()}
@@ -61,12 +61,12 @@ def run_script(cell_range):
     pipeline.set_model_info("SigmaMuTauStim2", "stim_identity", stims, per_cell=True)
     pipeline.set_model_info("SigmaMuTauStim3", "stim_identity", stims, per_cell=True)
     pipeline.set_model_info("SigmaMuTauStim4", "stim_identity", stims, per_cell=True)
-    pipeline.set_model_x0("SigmaMuTauStimWarden", [10, 0, 100, 1e-1, 1e-1,1e-1, 1e-1, 1e-1])
-    pipeline.set_model_x0("SigmaMuTau", [10, 0, 100, 1e-1, 1e-1])
-    pipeline.set_model_x0("SigmaMuTauStim1", [10, 0, 100, 1e-1, 1e-1])
-    pipeline.set_model_x0("SigmaMuTauStim2", [10, 0, 100, 1e-1, 1e-1])
-    pipeline.set_model_x0("SigmaMuTauStim3", [10, 0, 100, 1e-1, 1e-1])
-    pipeline.set_model_x0("SigmaMuTauStim4", [10, 0, 100, 1e-1, 1e-1])
+    pipeline.set_model_x0("SigmaMuTauStimWarden", [10, 10, 100, 1e-1, 1e-1,1e-1, 1e-1, 1e-1])
+    pipeline.set_model_x0("SigmaMuTau", [10, 10, 100, 1e-1, 1e-1])
+    pipeline.set_model_x0("SigmaMuTauStim1", [10, 10, 100, 1e-1, 1e-1])
+    pipeline.set_model_x0("SigmaMuTauStim2", [10, 10, 100, 1e-1, 1e-1])
+    pipeline.set_model_x0("SigmaMuTauStim3", [10, 10, 100, 1e-1, 1e-1])
+    pipeline.set_model_x0("SigmaMuTauStim4", [10, 10, 100, 1e-1, 1e-1])
     pipeline.set_model_x0("Const", [1e-1])
     pipeline.fit_all_models(solver_params=solver_params)
     pipeline.fit_even_odd(solver_params=solver_params)
