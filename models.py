@@ -42,7 +42,7 @@ class SigmaMuTauStimWarden(Model):
     
         s, mu, tau, a_1,a_2,a_3, a_4, a_0 = x
         l = 1/tau
-        fun1 = 0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
+        fun1 = l*0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
 
         fun = (
             (a_1*(self.stim_matrix[:, 0] * fun1.T))
@@ -88,7 +88,7 @@ class SigmaMuTau(Model):
         #     np.array(list(map(self.erfcx, (1/np.sqrt(2))*((s/tau)- (self.t-m)/s))))
         # ) + a_0
 
-        fun = a_1*(0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))) + a_0
+        fun = a_1*(l*0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))) + a_0
 
         return fun
 
@@ -168,7 +168,7 @@ class SigmaMuTauStim1(Model):
     
         s, mu, tau, a_1, a_0 = x
         l = 1/tau
-        fun1 = 0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
+        fun1 = l*0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
         # y.peak*((1/2)*exp((y.tau/2).*(2*y.mu + y.tau*y.sig^2-2*t)).*erfc((y.mu + y.tau*y.sig^2 - t)/(sqrt(2)*y.sig)));
 
         fun = (
@@ -229,7 +229,7 @@ class SigmaMuTauStim2(Model):
     
         s, mu, tau, a_1, a_0 = x
         l = 1/tau
-        fun1 = 0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
+        fun1 = l * 0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
 
         fun = (
             (a_1*(self.stim_matrix[:, 0] * fun1.T))
@@ -283,7 +283,7 @@ class SigmaMuTauStim3(Model):
     
         s, mu, tau, a_1, a_0 = x
         l = 1/tau
-        fun1 = 0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
+        fun1 = l*0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
 
         fun = (
             (a_1*(self.stim_matrix[:, 0] * fun1.T))
@@ -337,7 +337,7 @@ class SigmaMuTauStim4(Model):
     
         s, mu, tau, a_1, a_0 = x
         l = 1/tau
-        fun1 = 0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
+        fun1 = l*0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))
 
         fun = (
             (a_1*(self.stim_matrix[:, 0] * fun1.T))
