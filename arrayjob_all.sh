@@ -1,7 +1,7 @@
-#!/bin/bash -
+#!/bin/bash -l
 #$ -l h_rt=100:00:00
 #$ -P ecog-eeg
-#$ -N run_all_cells
+#$ -N array_all
 
 module load python3
 
