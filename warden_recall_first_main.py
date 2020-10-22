@@ -67,7 +67,5 @@ def run_script(cell_range):
     pipeline.compare_even_odd("SigmaMuTau", "SigmaMuTauStimWarden", 0.01)
    
 if __name__ == "__main__":
-    cell_range = sys.argv[-2:]
-    cell_range = list(map(int, cell_range))
-    cell_range = range(cell_range[0], cell_range[1]+1)
+    cell_range = range(int(sys.argv[1]), int(sys.argv[2])+1)
     run_script(cell_range)
