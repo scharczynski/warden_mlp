@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#$ -l h_rt=100:00:00
+#$ -l h_rt=500:00:00
 #$ -P ecog-eeg
 #$ -N array_all
 
