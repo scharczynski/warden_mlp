@@ -56,6 +56,11 @@ def run_script(cell_range):
     pipeline.compare_models("Const", "SigmaMuTauStim2", 0.01, smoother_value=100)
     pipeline.compare_models("Const", "SigmaMuTauStim3", 0.01, smoother_value=100)
     pipeline.compare_models("Const", "SigmaMuTauStim4", 0.01, smoother_value=100)
+    pipeline.compare_even_odd("Const", "SigmaMuTauStim1", 0.01)
+    pipeline.compare_even_odd("Const", "SigmaMuTauStim2", 0.01)
+    pipeline.compare_even_odd("Const", "SigmaMuTauStim3", 0.01)
+    pipeline.compare_even_odd("Const", "SigmaMuTauStim4", 0.01)
+
 
 
 

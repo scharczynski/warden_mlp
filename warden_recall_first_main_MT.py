@@ -56,15 +56,14 @@ def run_script(cell_range):
     pipeline.set_model_x0("SigmaMuTau", [2e-4, 10, 100, 1e-1, 1e-1])
     pipeline.set_model_x0("Const", [1e-1])
     pipeline.fit_all_models(solver_params=solver_params)
-    # pipeline.fit_even_odd(solver_params=solver_params)
-    # pipeline.compare_even_odd("Const", "SigmaMuTau", 0.01)
-    # pipeline.compare_even_odd("SigmaMuTau", "SigmaMuTauStimWarden", 0.01)
+    pipeline.fit_even_odd(solver_params=solver_params)
+
     pipeline.compare_models("Const", "SigmaMuTau", 0.01, smoother_value=100)
     pipeline.compare_models("Const", "SigmaMuTauStimWarden", 0.01, smoother_value=100)
     pipeline.compare_models("SigmaMuTau", "SigmaMuTauStimWarden", 0.01, smoother_value=100)
-    # pipeline.compare_even_odd("Const", "SigmaMuTau", 0.01)
-    # pipeline.compare_even_odd("Const", "SigmaMuTauStimWarden", 0.01)
-    # pipeline.compare_even_odd("SigmaMuTau", "SigmaMuTauStimWarden", 0.01)
+    pipeline.compare_even_odd("Const", "SigmaMuTau", 0.01)
+    pipeline.compare_even_odd("Const", "SigmaMuTauStimWarden", 0.01)
+    pipeline.compare_even_odd("SigmaMuTau", "SigmaMuTauStimWarden", 0.01)
    
 # run_script((20,21))
 if __name__ == "__main__":
