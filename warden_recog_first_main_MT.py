@@ -200,15 +200,15 @@ def run_script(cell_range):
     pipeline.set_model_x0("SigmaMuTau", [2e-4, 10, 100, 1e-1, 1e-1])
     pipeline.set_model_x0("Const", [1e-1])
     pipeline.fit_all_models(solver_params=solver_params)
-    # pipeline.fit_even_odd(solver_params=solver_params)
+    pipeline.fit_even_odd(solver_params=solver_params)
     # pipeline.compare_even_odd("Const", "SigmaMuTau", 0.01)
     # pipeline.compare_even_odd("SigmaMuTau", "SigmaMuTauStimWarden", 0.01)
     pipeline.compare_models("Const", "SigmaMuTau", 0.01, smoother_value=100)
     pipeline.compare_models("Const", "SigmaMuTauStimWarden", 0.01, smoother_value=100)
     pipeline.compare_models("SigmaMuTau", "SigmaMuTauStimWarden", 0.01, smoother_value=100)
-    # pipeline.compare_even_odd("Const", "SigmaMuTau", 0.01)
-    # pipeline.compare_even_odd("Const", "SigmaMuTauStimWarden", 0.01)
-    # pipeline.compare_even_odd("SigmaMuTau", "SigmaMuTauStimWarden", 0.01)
+    pipeline.compare_even_odd("Const", "SigmaMuTau", 0.01)
+    pipeline.compare_even_odd("Const", "SigmaMuTauStimWarden", 0.01)
+    pipeline.compare_even_odd("SigmaMuTau", "SigmaMuTauStimWarden", 0.01) 
 
     # # path_to_data = "/Users/stevecharczynski/workspace/data/warden/recog_trials/"
     # # save_dir = "/Users/stevecharczynski/workspace/data/warden/recog_trials/"
@@ -341,7 +341,7 @@ def run_script(cell_range):
 #     # pipeline.compare_even_odd("SigmaMuTauStim3", "SigmaMuTauStim", 0.01)
 #     # pipeline.compare_even_odd("SigmaMuTauStim4", "SigmaMuTauStim", 0.01)
 
-run_script(range(41, 42))
+# run_script(range(41, 42))
 if __name__ == "__main__":
     cell_range = range(int(sys.argv[1]), int(sys.argv[2])+1)
     run_script(cell_range)
