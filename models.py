@@ -150,7 +150,7 @@ class SigmaMuTauStim1(Model):
         else:
             trials  =  list(self.stims.keys())
         #rossi-pool 1 indexed trials
-        trial_indices = [x-1 for x in list(map(int, trials))]
+        trial_indices = [x for x in list(map(int, trials))]
 
         self.t = self.t[trial_indices]
         
@@ -213,7 +213,7 @@ class SigmaMuTauStim2(Model):
         else:
             trials  =  list(self.stims.keys())
         #rossi-pool 1 indexed trials
-        trial_indices = [x-1 for x in list(map(int, trials))]
+        trial_indices = [x for x in list(map(int, trials))]
 
         self.t = self.t[trial_indices]
         for trial_num, trial in enumerate(trials):
@@ -267,7 +267,7 @@ class SigmaMuTauStim3(Model):
         else:
             trials  =  list(self.stims.keys())
         #rossi-pool 1 indexed trials
-        trial_indices = [x-1 for x in list(map(int, trials))]
+        trial_indices = [x for x in list(map(int, trials))]
 
         self.t = self.t[trial_indices]
         for trial_num, trial in enumerate(trials):
@@ -321,7 +321,7 @@ class SigmaMuTauStim4(Model):
         else:
             trials  =  list(self.stims.keys())
         #rossi-pool 1 indexed trials
-        trial_indices = [x-1 for x in list(map(int, trials))]
+        trial_indices = [x for x in list(map(int, trials))]
 
         self.t = self.t[trial_indices]
         for trial_num, trial in enumerate(trials):
