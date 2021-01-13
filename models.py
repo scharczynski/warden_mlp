@@ -22,7 +22,7 @@ class SigmaMuTauStimWarden(Model):
         else:
             trials  =  list(self.stims.keys())
         #rossi-pool 1 indexed trials
-        trial_indices = [x-1 for x in list(map(int, trials))]
+        trial_indices = [x for x in list(map(int, trials))]
 
         self.t = self.t[trial_indices]
         for trial_num, trial in enumerate(trials):
@@ -388,9 +388,9 @@ class Gaussian(Model):
         
         return obj
 
-    def plot_model(self, x):
+    # def plot_model(self, x):
         
-        return self.model(x)
+    #     return self.model(x)
 
 class GaussianStim(Model):
 
@@ -409,7 +409,7 @@ class GaussianStim(Model):
         else:
             trials  =  list(self.stims.keys())
         #rossi-pool 1 indexed trials
-        trial_indices = [x-1 for x in list(map(int, trials))]
+        trial_indices = [x for x in list(map(int, trials))]
 
         self.t = self.t[trial_indices]
         for trial_num, trial in enumerate(trials):
@@ -470,7 +470,7 @@ class GaussianStim1(Model):
         else:
             trials  =  list(self.stims.keys())
         #rossi-pool 1 indexed trials
-        trial_indices = [x-1 for x in list(map(int, trials))]
+        trial_indices = [x for x in list(map(int, trials))]
 
         self.t = self.t[trial_indices]
         for trial_num, trial in enumerate(trials):
@@ -522,7 +522,7 @@ class GaussianStim2(Model):
         else:
             trials  =  list(self.stims.keys())
         #rossi-pool 1 indexed trials
-        trial_indices = [x-1 for x in list(map(int, trials))]
+        trial_indices = [x for x in list(map(int, trials))]
 
         self.t = self.t[trial_indices]
         for trial_num, trial in enumerate(trials):
@@ -575,7 +575,7 @@ class GaussianStim3(Model):
         else:
             trials  =  list(self.stims.keys())
         #rossi-pool 1 indexed trials
-        trial_indices = [x-1 for x in list(map(int, trials))]
+        trial_indices = [x for x in list(map(int, trials))]
 
         self.t = self.t[trial_indices]
         for trial_num, trial in enumerate(trials):
@@ -628,7 +628,7 @@ class GaussianStim4(Model):
         else:
             trials  =  list(self.stims.keys())
         #rossi-pool 1 indexed trials
-        trial_indices = [x-1 for x in list(map(int, trials))]
+        trial_indices = [x for x in list(map(int, trials))]
 
         self.t = self.t[trial_indices]
         for trial_num, trial in enumerate(trials):
