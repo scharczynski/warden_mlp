@@ -29,7 +29,7 @@ def run_script(cell_range):
         "a_0": [1e-10, 1/2.]
     }
     pipeline = analysis.Pipeline(cell_range, data_processor, [
-        "Const","SigmaMuTauStim1", \
+        "Const","GaussianStim1", \
             "GaussianStim2", "GaussianStim3", "GaussianStim4"], save_dir=save_dir)
     pipeline.set_model_bounds("GaussianStim1", bounds_stim)
     pipeline.set_model_bounds("GaussianStim2", bounds_stim)
