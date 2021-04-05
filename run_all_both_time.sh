@@ -5,7 +5,7 @@
 
 module load python3
 
- qsub arrayjob_all.sh 1 425 ./warden_recall_both_main_time.py
- qsub arrayjob_all.sh 1 442 ./warden_recog_both_main_time.py
- qsub arrayjob_all.sh 1 425 ./warden_recall_both_stim_time.py
- qsub arrayjob_all.sh 1 442 ./warden_recog_both_stim_time.py
+ qsub arrayjob_all.sh 1 425 ./warden_recall_both_time_main.py
+ qsub arrayjob_all.sh 1 442 ./warden_recog_both_time_main.py
+ qsub arrayjob_all.sh 1 425 ./warden_recall_both_time_stim.py
+ qsub arrayjob_all.sh 1 442 ./warden_recog_both_time_stim.py
