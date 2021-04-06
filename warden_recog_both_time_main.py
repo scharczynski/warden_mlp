@@ -81,8 +81,8 @@ def run_script(cell_range):
         stims = json.load(f)
         stims = {int(k):v for k,v in stims.items()}
     pipeline.set_model_info("GaussianStimBoth", "stim_identity", stims, per_cell=True)
-    pipeline.set_model_x0("GaussianStim", x0_stim)
-    pipeline.set_model_x0("Gaussian", x0_time)
+    pipeline.set_model_x0("GaussianStimBoth", x0_stim)
+    pipeline.set_model_x0("GaussianBoth", x0_time)
     pipeline.set_model_x0("Const", [1e-1])
     pipeline.fit_all_models(solver_params=solver_params)
     pipeline.fit_even_odd(solver_params=solver_params)
