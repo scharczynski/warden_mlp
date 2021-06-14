@@ -23,9 +23,7 @@ def run_script(cell_range):
     }
     bounds_stim = {
         "sigma1": [1e-4, 1000.],
-        "mu1": [0, 1500.],
-        "sigma2": [1e-4, 1000.],
-        "mu2": [1500, 3000.],
+        "mu1": [0, 3000.],
         "a_1": [1e-10, 1/5.],
         "a_2": [1e-10, 1/5.],
         "a_3": [1e-10, 1/5.],
@@ -34,9 +32,7 @@ def run_script(cell_range):
     }
     bounds_stim_pos = {
         "sigma1": [1e-4, 1000.],
-        "mu1": [0, 1500.],
-        "sigma2": [1e-4, 1000.],
-        "mu2": [1500, 3000.],
+        "mu1": [0, 3000.],
         "a_1": [1e-10, 1/9.],
         "a_2": [1e-10, 1/9.],
         "a_3": [1e-10, 1/9.],
@@ -50,9 +46,7 @@ def run_script(cell_range):
 
     bounds_pos = {
         "sigma1": [1e-4, 1000.],
-        "mu1": [0, 1500.],
-        "sigma2": [1e-4, 1000.],
-        "mu2": [1500, 3000.],
+        "mu1": [0, 3000.],
         "a_1": [1e-10, 1/3.],
         "a_2": [1e-10, 1/3.],
         "a_0": [1e-10, 1/3.]
@@ -60,23 +54,21 @@ def run_script(cell_range):
 
     bounds_time = {
         "sigma1": [1e-4, 1000.],
-        "mu1": [0, 1500.],
-        "sigma2": [1e-4, 1000.],
-        "mu2": [1500, 3000.],
+        "mu1": [0, 3000.],
         "a_1": [1e-10, 1/2.],
         "a_0": [1e-10, 1/2.]
     }
 
-    x0_time =  [10, 100, 10, 1600, 1e-1, 1e-1]
-    x0_pos = [10, 100, 10, 1600, 1e-1, 1e-1, 1e-1]
-    x0_stim_pos = [10, 100, 10, 1600, 1e-1, 1e-1, 1e-1, 1e-1, 1e-1,1e-1, 1e-1,1e-1, 1e-1]
-    x0_stim  = [10, 100, 10, 1600, 1e-1, 1e-1, 1e-1, 1e-1, 1e-1]
+    x0_time =  [10, 100, 1e-1, 1e-1]
+    x0_pos = [10, 100, 1e-1, 1e-1, 1e-1]
+    x0_stim_pos = [10, 100, 1e-1, 1e-1, 1e-1, 1e-1, 1e-1,1e-1, 1e-1,1e-1, 1e-1]
+    x0_stim  = [10, 100, 1e-1, 1e-1, 1e-1, 1e-1, 1e-1]
     pipeline = analysis.Pipeline(cell_range, data_processor, [
         "Const","GaussianBoth", "GaussianStimBoth"], save_dir=save_dir)
     pipeline.set_model_bounds("GaussianBoth", bounds_time)
     pipeline.set_model_bounds("GaussianStimBoth", bounds_stim)
     pipeline.set_model_bounds("Const", {"a_0":[10e-10, 1]})
-    # with open("/Users/stevecharczynski/workspace/data/warden/recall_trials/info.json") as f:
+    # with open("/Users/stevecharczynski/workspace/data/warden/recog_trials/info.json") as f:
     with open("/projectnb/ecog-eeg/stevechar/data/warden/recog_trials/info.json") as f:
         stims = json.load(f)
         stims = {int(k):v for k,v in stims.items()}
@@ -86,8 +78,6 @@ def run_script(cell_range):
     pipeline.set_model_x0("Const", [1e-1])
     pipeline.fit_all_models(solver_params=solver_params)
     pipeline.fit_even_odd(solver_params=solver_params)
-    # pipeline.compare_even_odd("Const", "SigmaMuTau", 0.01)
-    # pipeline.compare_even_odd("SigmaMuTau", "SigmaMuTauStimWarden", 0.01)
     pipeline.compare_models("Const", "GaussianBoth", 0.01, smoother_value=100)
     pipeline.compare_models("Const", "GaussianStimBoth", 0.01, smoother_value=100)
     pipeline.compare_models("GaussianBoth", "GaussianStimBoth", 0.01, smoother_value=100)

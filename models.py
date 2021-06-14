@@ -102,6 +102,41 @@ class SigmaMuTau(Model):
     def plot_model(self, x):
         return self.model(x)
 
+class SigmaMuTauDual(Model):
+
+    def __init__(self, data):
+        super().__init__(data)
+        # self.spikes = data['spikes']
+        self.param_names = ["sigma", "mu", "tau", "a_1", "a_2", "a_0"]
+        # self.x0 = [100, 5000, 0.001, 1e-5, 1e-5]
+
+
+    def model(self, x):
+        '''One thing to try is to maybe pull out self.t as a kwarg in optimize, might allow jacobian to be calculated easier
+        '''
+
+        s, mu_1, tau, a_1, a_2, a_0 = x
+        l = 1/tau
+        '''old method'''
+        # fun = a_1*np.exp(-0.5*(np.power((self.t-m)/s,2)))*(s/tau)*np.sqrt(np.pi/2)*(
+        #     np.array(list(map(self.erfcx, (1/np.sqrt(2))*((s/tau)- (self.t-m)/s))))
+        # ) + a_0
+
+        fun = (a_1*(0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))) +
+           a_2*(0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))) + a_0)
+
+        return fun
+
+    def objective(self, x):
+        fun = self.model(x)
+        obj = np.sum(self.spikes * (-np.log(fun)) +
+                      (1 - self.spikes) * (-np.log(1 - (fun))))
+        
+        return obj
+
+    def plot_model(self, x):
+        return self.model(x)
+
 class Const(Model):
 
     """Model which contains only a single offset parameter.
@@ -671,7 +706,7 @@ class GaussianBoth(Model):
 
     def __init__(self, data):
         super().__init__(data)
-        self.param_names = ["sigma1", "mu1", "sigma2", "mu2", "a_1", "a_0"]
+        self.param_names = ["sigma1", "mu1", "a_1", "a_0"]
         # self.x0 = [100, 5000, 0.001, 1e-5, 1e-5]
 
 
@@ -679,11 +714,12 @@ class GaussianBoth(Model):
         '''One thing to try is to maybe pull out self.t as a kwarg in optimize, might allow jacobian to be calculated easier
         '''
 
-        sigma1, mu1, sigma2, mu2, a_1, a_0 = x
+        sigma1, mu1, a_1, a_0 = x
+        mu2 = mu1 + 1500
 
         fun = (
-            (a_1 * np.exp(-np.power(self.t - mu1, 2.) / (2 * np.power(sigma1, 2.))))  +
-            (a_1 * np.exp(-np.power(self.t - mu2, 2.) / (2 * np.power(sigma2, 2.)))) + a_0)
+            a_1*(np.exp(-np.power(self.t - mu1, 2.) / (2 * np.power(sigma1, 2.)))  +
+            (np.exp(-np.power(self.t - mu2, 2.) / (2 * np.power(sigma1, 2.))))) + a_0)
     
         return fun
 
@@ -702,7 +738,7 @@ class GaussianBothPos(Model):
 
     def __init__(self, data):
         super().__init__(data)
-        self.param_names = ["sigma1", "mu1", "sigma2", "mu2", "a_1","a_2", "a_0"]
+        self.param_names = ["sigma1", "mu1", "a_1","a_2", "a_0"]
         # self.x0 = [100, 5000, 0.001, 1e-5, 1e-5]
 
 
@@ -710,11 +746,12 @@ class GaussianBothPos(Model):
         '''One thing to try is to maybe pull out self.t as a kwarg in optimize, might allow jacobian to be calculated easier
         '''
 
-        sigma1, mu1, sigma2, mu2, a_1,a_2, a_0 = x
+        sigma1, mu1, a_1,a_2, a_0 = x
+        mu2 = mu1 + 1500
 
         fun = (
             (a_1 * np.exp(-np.power(self.t - mu1, 2.) / (2 * np.power(sigma1, 2.))))  +
-            (a_2 * np.exp(-np.power(self.t - mu2, 2.) / (2 * np.power(sigma2, 2.)))) + a_0)
+            (a_2 * np.exp(-np.power(self.t - mu2, 2.) / (2 * np.power(sigma1, 2.)))) + a_0)
     
         return fun
 
@@ -734,7 +771,7 @@ class GaussianStimBoth(Model):
 
     def __init__(self, data):
         super().__init__(data)
-        self.param_names = ["sigma1", "mu1", "sigma2", "mu2", "a_1", "a_2","a_3", "a_4", "a_0"]
+        self.param_names = ["sigma1", "mu1", "a_1", "a_2","a_3", "a_4", "a_0"]
         self.t = np.tile(self.t, (self.num_trials, 1))
 
     def info_callback(self):
@@ -748,7 +785,7 @@ class GaussianStimBoth(Model):
         else:
             trials  =  list(self.stims.keys())
         #rossi-pool 1 indexed trials
-        trial_indices = [x-1 for x in list(map(int, trials))]
+        trial_indices = [x for x in list(map(int, trials))]
 
         self.t = self.t[trial_indices]
         for trial_num, trial in enumerate(trials):
@@ -775,9 +812,10 @@ class GaussianStimBoth(Model):
 
     def model(self, x, plot=False):
     
-        sigma1, mu1, sigma2, mu2, a_1,a_2,a_3, a_4, a_0 = x
+        sigma1, mu1, a_1,a_2,a_3, a_4, a_0 = x
+        mu2 = mu1 + 1500
         fun_p1 = np.exp(-np.power(self.t - mu1, 2.) / (2 * np.power(sigma1, 2.)))
-        fun_p2 = np.exp(-np.power(self.t - mu2, 2.) / (2 * np.power(sigma2, 2.)))
+        fun_p2 = np.exp(-np.power(self.t - mu2, 2.) / (2 * np.power(sigma1, 2.)))
             
         fun = (
             (a_1*(self.stim_matrix_1[:, 0] * fun_p1.T + self.stim_matrix_2[:, 0] * fun_p2.T))
@@ -809,8 +847,6 @@ class GaussianStimBothPos(Model):
         super().__init__(data)
         self.param_names = ["sigma1", 
             "mu1", 
-            "sigma2", 
-            "mu2", 
             "a_1", 
             "a_2",
             "a_3", 
@@ -833,7 +869,7 @@ class GaussianStimBothPos(Model):
         else:
             trials  =  list(self.stims.keys())
         #rossi-pool 1 indexed trials
-        trial_indices = [x-1 for x in list(map(int, trials))]
+        trial_indices = [x for x in list(map(int, trials))]
 
         self.t = self.t[trial_indices]
         for trial_num, trial in enumerate(trials):
@@ -860,9 +896,10 @@ class GaussianStimBothPos(Model):
 
     def model(self, x, plot=False):
     
-        sigma1, mu1, sigma2, mu2, a_1,a_2,a_3, a_4,a_5, a_6, a_7, a_8, a_0 = x
+        sigma1, mu1, a_1,a_2,a_3, a_4,a_5, a_6, a_7, a_8, a_0 = x
+        mu2 = mu1 + 1500
         fun_p1 = np.exp(-np.power(self.t - mu1, 2.) / (2 * np.power(sigma1, 2.)))
-        fun_p2 = np.exp(-np.power(self.t - mu2, 2.) / (2 * np.power(sigma2, 2.)))
+        fun_p2 = np.exp(-np.power(self.t - mu2, 2.) / (2 * np.power(sigma1, 2.)))
             
         fun = (
             (a_1*self.stim_matrix_1[:, 0] * fun_p1.T + a_5*self.stim_matrix_2[:, 0] * fun_p2.T)
@@ -1305,3 +1342,41 @@ class ExponentialStim4(Model):
                       (1 - self.spikes) * (-np.log(1 - (fun))))
 
         return obj
+
+class SigmaMuTau_rx(Model):
+
+    def __init__(self, data):
+        super().__init__(data)
+        # self.spikes = data['spikes']
+        self.param_names = ["x", "mu", "r", "a_1", "a_0"]
+        # self.x0 = [100, 5000, 0.001, 1e-5, 1e-5]
+
+
+    def model(self, x):
+        '''One thing to try is to maybe pull out self.t as a kwarg in optimize, might allow jacobian to be calculated easier
+        '''
+
+        x, mu, r, a_1, a_0 = x
+
+        tau = np.sqrt((x**2)/(r**2 + 1))
+        s = r*np.sqrt((x**2)/(r**2 + 1))
+        
+        l = 1/tau
+        '''old method'''
+        # fun = a_1*np.exp(-0.5*(np.power((self.t-m)/s,2)))*(s/tau)*np.sqrt(np.pi/2)*(
+        #     np.array(list(map(self.erfcx, (1/np.sqrt(2))*((s/tau)- (self.t-m)/s))))
+        # ) + a_0
+
+        fun = a_1*(0.5*(np.exp((l/2)*(2*mu+l*s**2-2*self.t))*sse.erfc((mu+l*s**2-self.t)/(np.sqrt(2)*s)))) + a_0
+
+        return fun
+
+    def objective(self, x):
+        fun = self.model(x)
+        obj = np.sum(self.spikes * (-np.log(fun)) +
+                      (1 - self.spikes) * (-np.log(1 - (fun))))
+        
+        return obj
+
+    def plot_model(self, x):
+        return self.model(x)
