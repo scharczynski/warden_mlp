@@ -1,7 +1,7 @@
 #!/bin/bash -l
 #$ -l h_rt=500:00:00
 #$ -P ecog-eeg
-#$ -N cell_$1
+#$ -N cell
 
 module load python3
 cell=$(($SGE_TASK_ID - 1))
