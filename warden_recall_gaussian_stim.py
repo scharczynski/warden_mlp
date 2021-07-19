@@ -8,7 +8,7 @@ import json
 def run_script(cell_range):
     # path_to_data = "/Users/stevecharczynski/workspace/data/warden/recall_trials/"
     # save_dir = "/Users/stevecharczynski/workspace/data/warden/recall_trials/"
-    save_dir = "/projectnb/ecog-eeg/stevechar/ml_runs/warden/recall_trials_both_main_time/"
+    save_dir = "/projectnb/ecog-eeg/stevechar/ml_runs/warden/recall_trials_gaussian_stim/"
     path_to_data = "/projectnb/ecog-eeg/stevechar/data/warden/recall_trials/"
     data_processor = analysis.DataProcessor(
         path_to_data, cell_range, window=[0, 3000])
