@@ -22,8 +22,8 @@ def run_script(cell_range):
         "disp":False
     }
     bounds_stim = {
-        "sigma1": [1e-3, 1000.],
-        "mu1": [0, 2500.],
+        "sigma": [1e-3, 1000.],
+        "mu": [0, 2500.],
         "a_1": [1e-10, 1/5.],
         "a_2": [1e-10, 1/5.],
         "a_3": [1e-10, 1/5.],
@@ -53,8 +53,8 @@ def run_script(cell_range):
     }
 
     bounds_time = {
-        "sigma1": [1e-3, 1000.],
-        "mu1": [0, 2500.],
+        "sigma": [1e-3, 1000.],
+        "mu": [0, 2500.],
         "a_1": [1e-10, 1/2.],
         "a_0": [1e-10, 1/2.]
     }
