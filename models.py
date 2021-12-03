@@ -844,8 +844,8 @@ class GaussianConjunctive(Model):
 
     def __init__(self, data):
         super().__init__(data)
-        self.param_names = ["sigma1", 
-        "mu1", 
+        self.param_names = ["sigma", 
+        "mu", 
         "a_1", 
         "a_2",
         "a_3", 
@@ -907,10 +907,10 @@ class GaussianConjunctive(Model):
 
     def model(self, x, plot=False):
     
-        sigma1, mu1, a_1,a_2,a_3, a_4, a_5, a_6, a_7, a_8, a_9, a_10, a_11, a_12, a_0 = x
-        mu2 = mu1 + 1500
-        fun_p1 = np.exp(-np.power(self.t - mu1, 2.) / (2 * np.power(sigma1, 2.)))
-        fun_p2 = np.exp(-np.power(self.t - mu2, 2.) / (2 * np.power(sigma1, 2.)))
+        sigma, mu, a_1,a_2,a_3, a_4, a_5, a_6, a_7, a_8, a_9, a_10, a_11, a_12, a_0 = x
+        mu2 = mu + 1500
+        fun_p1 = np.exp(-np.power(self.t - mu, 2.) / (2 * np.power(sigma, 2.)))
+        fun_p2 = np.exp(-np.power(self.t - mu2, 2.) / (2 * np.power(sigma, 2.)))
             
         fun = (
             (a_1*(self.stim_matrix[:, 0] * fun_p1.T + self.stim_matrix[:, 0] * fun_p2.T))
