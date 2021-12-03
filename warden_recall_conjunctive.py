@@ -58,7 +58,7 @@ def run_script(cell_range):
 
     bounds_time = {
         "sigma1": [1e-3, 1000.],
-        "mu1": [0, 2500.],
+        "mu1": [0, 3000.],
         "a_1": [1e-10, 1/2.],
         "a_0": [1e-10, 1/2.]
     }
